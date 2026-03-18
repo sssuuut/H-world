@@ -1,1 +1,88 @@
+!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RSA — Учебный пример</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1, h2 { color: #2c3e50; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 6px; overflow-x: auto; }
+    .key { background: #e8f4f8; padding: 8px; margin: 10px 0; border-left: 4px solid #3498db; }
+    .note { background: #fff3cd; padding: 12px; border-left: 4px solid #ffc107; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>Учебный пример RSA</h1>
 
+  <h2>1. Выбираем простые числа</h2>
+  <p>p = 3, q = 5</p>
+
+  <h2>2. Вычисляем n</h2>
+  <p>n = p × q = 3 × 5 = <strong>15</strong></p>
+
+  <h2>3. Вычисляем φ(n)</h2>
+  <p>φ(n) = (p−1)(q−1) = 2 × 4 = <strong>8</strong></p>
+
+  <h2>4. Выбираем открытую экспоненту e</h2>
+  <p>1 &lt; e &lt; φ(n), НОД(e, φ(n)) = 1 → выбираем <strong>e = 3</strong></p>
+
+  <h2>5. Находим закрытый ключ d</h2>
+  <p>Ищем d такое, что (e × d) mod φ(n) = 1<br>
+     (3 × d) mod 8 = 1 → <strong>d = 3</strong></p>
+
+  <div class="key">
+    <strong>Открытый ключ:</strong> (n = 15, e = 3)<br>
+    <strong>Закрытый ключ:</strong> (n = 15, d = 3)
+  </div>
+
+  <h2>6. Шифруем сообщение</h2>
+  <p>Пусть сообщение: <strong>m = 2</strong> («анализ готов»)</p>
+  <p><strong>Условие:</strong> m должно быть меньше n → 2 &lt; 15 → ✅</p>
+  <p>Формула шифрования: C = m<sup>e</sup> mod n</p>
+  <p>C = 2<sup>3</sup> mod 15 = 8 mod 15 = <strong>8</strong></p>
+  <p>→ <strong>Шифротекст C = 8</strong></p>
+
+  <h2>7. Расшифровываем сообщение</h2>
+  <p>Формула расшифровки: M = C<sup>d</sup> mod n</p>
+  <p>M = 8<sup>3</sup> mod 15 = 512 mod 15 = <strong>2</strong></p>
+  <p>✅ <strong>Исходное сообщение восстановлено!</strong></p>
+
+  <div class="note">
+    <strong>В реальности:</strong><br>
+    • n — это число из <strong>600+ десятичных цифр</strong><br>
+    • Такие числа делают RSA неуязвимым для перебора<br>
+    • Это обеспечивает безопасность банков, сайтов, мессенджеров
+  </div>
+
+  <h2>Проверь сам!</h2>
+  <form>
+    <label>Введите число для шифрования (от 1 до 14):</label><br>
+    <input type="number" id="message" min="1" max="14" value="2">
+    <button type="button" onclick="encrypt()">Зашифровать</button>
+    <button type="button" onclick="decrypt()">Расшифровать</button>
+  </form>
+  <p id="result"></p>
+
+  <script>
+    const n = 15, e = 3, d = 3;
+    function encrypt() {
+      const m = parseInt(document.getElementById('message').value);
+      if (m <= 0 || m >= n) {
+        document.getElementById('result').innerText = 'Ошибка: число должно быть от 1 до 14';
+        return;
+      }
+      const c = (m ** e) % n;
+      document.getElementById('result').innerHTML = `Зашифровано: ${m}<sup>${e}</sup> mod ${n} = <strong>${c}</strong>`;
+    }
+    function decrypt() {
+      const c = parseInt(document.getElementById('message').value);
+      const m = (c ** d) % n;
+      document.getElementById('result').innerHTML = `Расшифровано: ${c}<sup>${d}</sup> mod ${n} = <strong>${m}</strong>`;
+    }
+  </script>
+
+  <br><br>
+  <a href="index.html">← Вернуться на главную</a>
+</body>
+</html>
